@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Move into deployment path
+cd ~/applications/$CLOUDWAYS_APPID/public_html
+
+# Run composer from system binary if available
+if command -v composer >/dev/null 2>&1; then
+  composer install --no-dev --prefer-dist --optimize-autoloader
+else
+  php composer.phar install --no-dev --prefer-dist --optimize-autoloader
+fi
+
+# Clear opcache if it's enabled
+php -r 'if (function_exists("opcache_reset")) { opcache_reset(); }'
